@@ -26,8 +26,6 @@ void toggle_action(GtkWidget *checkButton, GtkWidget *widget)
         // Обратное действие
         gtk_widget_set_sensitive(GTK_WIDGET(widget), FALSE);
     }
-
-
 }
 
 /* createEntry */
