@@ -8,7 +8,7 @@
 #include "tab2.h"
 #include "gui.h"
 
-/* garfeild.c */
+/* tab2.c */
 
 #define ROWS 7
 #define COLUMNS 3
