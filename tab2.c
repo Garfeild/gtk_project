@@ -42,7 +42,7 @@
     
 sqlite3 *db;
 GtkTreeStore *store;
-//GPtrArray *results;
+
 /* Callbacks */
 static int callback(void *NotUsed, int argc, char **argv, char **azColName)
 {
@@ -147,125 +147,10 @@ void input_clear(GtkWidget *gw, GPtrArray *input)
     }
 }
 
-/*
-void toggle_action(GtkWidget *checkButton, GtkWidget *widget)
-{
-    gboolean val;
-    val = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkButton));
-    if( val == TRUE && !GTK_WIDGET_SENSITIVE(widget) )
-    {
-        gtk_widget_set_sensitive(GTK_WIDGET(widget), TRUE);
-    }
-    else if (val == FALSE)
-    {
-        gtk_widget_set_sensitive(GTK_WIDGET(widget), FALSE);
-    }
-
-
-}
-*/
-
 void entry_enter(GtkWidget *gw, GtkWidget *button)
 {
     g_signal_emit_by_name(G_OBJECT(button), "clicked");
 }
-
-/* Create some widgets */
-/*
-GtkWidget* createEntry(GPtrArray *entries, GPtrArray *all, const gchar *name, const gchar *wname)
-{
-    GtkWidget *_entry;
-    GtkWidget *_label;
-    GtkWidget *_leftAlign;
-    GtkWidget *_vbox;
-    
-    _entry = gtk_entry_new();
-    gtk_widget_set_name(GTK_WIDGET(_entry), wname);
-    g_ptr_array_add(entries, _entry);
-    g_ptr_array_add(all, _entry);
-    
-    _label = gtk_check_button_new_with_label(name);
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(_label), TRUE);
-
-    _leftAlign = gtk_alignment_new(0, 0.5, 0.1, 0);
-    
-    _vbox = gtk_vbox_new(FALSE, 5);
-    
-    gtk_container_add(GTK_CONTAINER(_leftAlign), GTK_WIDGET(_label));
-    
-    //gtk_box_pack_start(GTK_BOX(_vbox), _leftAlign, TRUE, TRUE, 0);
-    //gtk_box_pack_start(GTK_BOX(_vbox), _entry, TRUE, TRUE, 0);
-    gtk_container_add(GTK_CONTAINER(_vbox), _leftAlign);
-    gtk_container_add(GTK_CONTAINER(_vbox), _entry);
-
-    g_signal_connect(G_OBJECT(_label), "toggled",
-            G_CALLBACK(toggle_action), (gpointer) _entry);
-    return _vbox;
-}
-
-GtkWidget* createComboBox(GPtrArray *comboboxes, GPtrArray *all, const gchar *name, const gchar *wname)
-{
-    GtkWidget *_combobox;
-    GtkWidget *_label;
-    GtkWidget *_leftAlign;
-    GtkWidget *_vbox;
-    const gchar *textForCombobox[2] = { "Есть", "Нет" };
-    
-    _combobox = gtk_combo_box_new_text();
-    gtk_widget_set_name(GTK_WIDGET(_combobox), wname);
-    gtk_combo_box_append_text(GTK_COMBO_BOX(_combobox), textForCombobox[0]); 
-    gtk_combo_box_append_text(GTK_COMBO_BOX(_combobox), textForCombobox[1]); 
-    g_ptr_array_add(comboboxes, _combobox);
-    g_ptr_array_add(all, _combobox);
-    
-    _label = gtk_check_button_new_with_label(name);
-
-    _leftAlign = gtk_alignment_new(0, 0.5, 0.1, 0);
-    
-    _vbox = gtk_vbox_new(FALSE, 5);
-    
-    gtk_container_add(GTK_CONTAINER(_leftAlign), GTK_WIDGET(_label));
-    
-    //gtk_box_pack_start(GTK_BOX(_vbox), _leftAlign, FALSE, FALSE, 0);
-    //gtk_box_pack_start(GTK_BOX(_vbox), _combobox, FALSE, FALSE, 0);
-    gtk_container_add(GTK_CONTAINER(_vbox), _leftAlign);
-    gtk_container_add(GTK_CONTAINER(_vbox), _combobox);
-
-    g_signal_connect(G_OBJECT(_label), "toggled",
-            G_CALLBACK(toggle_action), (gpointer) _combobox);
-
-    g_signal_emit_by_name(_label, "toggled", (gpointer)_combobox);
-    
-    return _vbox;
-}
-
-GtkWidget* createFrame(GPtrArray *entries, GPtrArray *all, const gchar name[], const gchar *names[], const gchar *wnames[], const int size)
-{
-    GtkWidget *_frame;
-    GtkWidget *_label;
-    GtkWidget *_vbox;
-    int i;
-
-    _frame = gtk_frame_new(NULL);
-    _vbox = gtk_vbox_new(FALSE, 5);
-    _label = gtk_check_button_new_with_label(name);
-    g_ptr_array_add(all, _label);
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(_label), TRUE);
-    gtk_frame_set_label_widget(GTK_FRAME(_frame), GTK_WIDGET(_label));
-    for ( i=0; i<size; i++ )
-    {
-        gtk_container_add(GTK_CONTAINER(_vbox), createEntry(entries, all, names[i], wnames[i]));
-
-    }
-
-    gtk_container_add(GTK_CONTAINER(_frame), GTK_WIDGET(_vbox));
-    gtk_container_set_border_width(GTK_CONTAINER(_frame), 5);
-    
-    g_signal_connect(G_OBJECT(_label), "toggled",
-            G_CALLBACK(toggle_action), (gpointer) _vbox);
-    return _frame;
-}
-*/
 
 /* table */
 void set_column(GtkWidget *tree, const char *labelColumn[])
@@ -312,32 +197,6 @@ void set_table_info(GPtrArray *results)
             -1);
 }
 
-/*void set_table_info(GtkTreeStore *store, const char *names[], gboolean flag)
-{
-    GtkTreeIter iter;
- 
-    gtk_tree_store_append (store, &iter, NULL);
-    gtk_tree_store_set (store, &iter,
-            CORE_PERF, names[CORE_PERF],                //1
-            CORE_DIGIT,  names[CORE_DIGIT],             //2
-            COUNT_TIMERS, names[COUNT_TIMERS],          //3
-            ASYNC_PORT_TYPE, names[ASYNC_PORT_TYPE],    //4
-            CASE_TYPE, names[CASE_TYPE],                //5
-            GUARD_TIMER, names[GUARD_TIMER],            //6
-            INTERFACE_RAM, names[INTERFACE_RAM],        //7
-            INTERFACE_DEBUG, names[INTERFACE_DEBUG],    //8
-            DMA, names[DMA],                            //9
-            PLL, names[PLL],                            //0
-            ADC_DIGIT, names[ADC_DIGIT],                //1
-            ADC_CHANNELS, names[ADC_CHANNELS],          //2
-            ADC_PERF, names[ADC_PERF],                  //3
-            RAM_COMMAND, names[RAM_COMMAND],            //4
-            RAM_DATA, names[RAM_DATA],                  //5
-            OTHER, names[OTHER],                        //6
-            -1);
-}
-*/
-
 GtkWidget* setup_table(GtkTreeStore *store, const char *labelColumn[])
 {
   GtkWidget *tree;
@@ -362,7 +221,6 @@ GtkWidget* tab2()
     GtkWidget *scrWindow;
     //GtkTreeStore *store;
     GPtrArray *input;
-    GPtrArray *all;
     int i, j;
 
     const gchar *labelCoumn[17] = {
@@ -486,7 +344,6 @@ GtkWidget* tab2()
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrWindow), GTK_POLICY_AUTOMATIC, GTK_POLICY_NEVER);
     input = g_ptr_array_new();
     //g_print("INPUT: Created\n");
-    all = g_ptr_array_new();
     
     //results = g_ptr_array_new();
 
@@ -498,19 +355,19 @@ GtkWidget* tab2()
     
     for (i=0; i<3; i++) {
         if (i==1)   {
-            gtk_table_attach_defaults(GTK_TABLE(tableBox), GTK_WIDGET(createFrame(input, all, "АЦП", namesACP, namesFromBaseACP, 3)), 1, 2, 0, 3 );
+            gtk_table_attach_defaults(GTK_TABLE(tableBox), GTK_WIDGET(createFrame(input, "АЦП", namesACP, namesFromBaseACP, 3)), 1, 2, 0, 3 );
 
-            gtk_table_attach_defaults(GTK_TABLE(tableBox), GTK_WIDGET(createFrame(input, all, "RAM", namesRAM, namesFromBaseRAM, 2)), 1, 2, 3, 5);
+            gtk_table_attach_defaults(GTK_TABLE(tableBox), GTK_WIDGET(createFrame(input, "RAM", namesRAM, namesFromBaseRAM, 2)), 1, 2, 3, 5);
         }
         else if(i==0)
         {
             for(j=0; j<5; j++)
-                gtk_table_attach_defaults(GTK_TABLE(tableBox), GTK_WIDGET(createEntry(input, all, nameEntries[j], namesFromBaseEntries[j])), i, i+1, j, j+1);
+                gtk_table_attach_defaults(GTK_TABLE(tableBox), GTK_WIDGET(createEntry(input, nameEntries[j], namesFromBaseEntries[j])), i, i+1, j, j+1);
         }
         else if(i==2)
         {
             for(j=0; j<5; j++)
-                gtk_table_attach_defaults(GTK_TABLE(tableBox), GTK_WIDGET(createComboBox(input, all, nameCombobox[j], namesFromBaseCombobox[j])), i, i+1, j, j+1);
+                gtk_table_attach_defaults(GTK_TABLE(tableBox), GTK_WIDGET(createComboBox(input, nameCombobox[j], namesFromBaseCombobox[j])), i, i+1, j, j+1);
         }
     }
     
@@ -538,7 +395,6 @@ GtkWidget* tab2()
 
    return tableBox;
 }
-
 
 /////////////////////////////////////////////////////////////////////////////
 /* old stuff

@@ -1,24 +1,3 @@
-/***************************************************************************
- *   NAME version VERSION                                                   *
- *   Copyright (C) 2007-2009 by Anton "Garfeild" Kolchunov                 *
- *   kolchunovad (at) gmail.com or garfeild.ubuntu (at) gmail.com          *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .        *
- ***************************************************************************/
-
 /* gui.h */
 
 #ifndef  GUI_H
@@ -26,10 +5,53 @@
 
 #include <gtk/gtk.h>
 
-GtkWidget* createEntry(GPtrArray *entries, GPtrArray *all, const gchar *name, const gchar *wname);
+/* функция для создания виджета GtkEntry с заданными параметрами и          *
+ * необходимыми дополнительными виджетами.                                  *
+ *                                                                          *
+ * В функцию передаются следующие параметры:                                *
+ * > GPtrArray *entries   -   массив указателей на виджеты. В него          *
+ * записываются указатели всех создаваемых виджетов для ввода информации    *
+ * > gchar *name          -   указатель на строку с текстом для обозначения *
+ * виджета ввода (метки).                                                   *
+ * > gchar *wname         -   указатель на строку с названием виджета.      *
+ * Используется при составлении SQL запроса.                                *
+ *                                                                          *
+ * функция возвращает указатель на виджет, содержащий все необходимые       * 
+ * виджеты                                                                  */
+GtkWidget* createEntry(GPtrArray *entries, const gchar *name, const gchar *wname);
 
-GtkWidget* createComboBox(GPtrArray *comboboxes, GPtrArray *all, const gchar *name, const gchar *wname);
+/* функция для создания виджета GtkComboBox с заданными параметрами и       *
+ * необходимыми дополнительными виджетами.                                  *
+ *                                                                          *
+ * В функцию передаются следующие параметры:                                *
+ * > GPtrArray *comboboxes    -   массив указателей на виджеты. В него      *
+ * записываются указатели всех создаваемых виджетов для ввода информации    *
+ * > gchar *name              -   указатель на строку с текстом для         *
+ * обозначения виджета ввода (метки).                                       *
+ * > gchar *wname             -   указатель на строку с названием виджета.  *
+ * Используется при составлении SQL запроса.                                *
+ *                                                                          *
+ * функция возвращает указатель на виджет, содержащий все необходимые       * 
+ * виджеты                                                                  */
+GtkWidget* createComboBox(GPtrArray *comboboxes, const gchar *name, const gchar *wname);
 
-GtkWidget* createFrame(GPtrArray *entries, GPtrArray *all, const gchar name[], const gchar *names[], const gchar *wnames[], const int size);
+/* функция для создания виджета GtkFrame с заданными параметрами и          *
+ * необходимыми дополнительными виджетами.                                  *
+ *                                                                          *
+ * В функцию передаются следующие параметры:                                *
+ * > GPtrArray *entries     -   массив указателей на виджеты. В него        *
+ * записываются указатели всех создаваемых виджетов для ввода информации    *
+ * > gchar *frameName       -   указатель на строку с текстом для метки     *
+ * фрейма                                                                   *
+ * > gchar *names[]         -   указатель на массив размерностью size,      *
+ * который содержит строки для меток для каждого поля ввода                 *
+ * > gchar *wnames[]        -   указатель на массив размерностью size,      *
+ * который содержит строки для указания имени виджета (используется в       *
+ * SQL запросах)                                                            *
+ * > int size               -   содержит количество виджетов ввода во       *
+ * фрейме                                                                   *
+ *                                                                          * 
+ * функция возвращает указатель на фрейм, содержащий size виджетов ввода    */
+GtkWidget* createFrame(GPtrArray *entries, const gchar name[], const gchar *names[], const gchar *wnames[], const int size);
 
 #endif   
