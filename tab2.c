@@ -16,6 +16,7 @@
 #define AVIABLE 0
 #define UNAVIABLE 1
 
+/* Набор дефайнов для таблицы вывода */
 #define N_COLUMNS 16
 
 #define MP_NAME 0
@@ -39,12 +40,15 @@
 #define RAM_DATA 15 
 
 #define OTHER 16
+/* end */
     
 sqlite3 *db;
 GtkTreeStore *store;
 
 /* Callbacks */
-static int callback(void *NotUsed, int argc, char **argv, char **azColName)
+/* sql_callback */
+/* функция-callback для обработки SQL запроса */
+static int sql_callback(void *NotUsed, int argc, char **argv, char **azColName)
 {
     int i;
     NotUsed=0;
@@ -62,9 +66,8 @@ static int callback(void *NotUsed, int argc, char **argv, char **azColName)
     return 0;
 } 
 
-//static int callbackForTable(void *NotUsed, int argc, char **argv, char **azColName)
-
-void entry_print2(GtkWidget *gw, GPtrArray *array)
+/* form_sql_request_callback */
+void form_sql_request_callback(GtkWidget *gw, GPtrArray *array)
 { 
     char *zErrMsg = 0;
     int rc;
@@ -124,7 +127,7 @@ void entry_print2(GtkWidget *gw, GPtrArray *array)
 
         }
     }
-    rc = sqlite3_exec(db, str2, callback, 0, &zErrMsg);
+    rc = sqlite3_exec(db, str2, sql_callback, 0, &zErrMsg);
     if( rc!=SQLITE_OK )
     {
         g_fprintf(stderr,"SQL error: %s\n", zErrMsg);
@@ -135,6 +138,8 @@ void entry_print2(GtkWidget *gw, GPtrArray *array)
     g_free(str3);
 }
 
+/* input_clear */
+/* функция-callback для очистки виджетов ввода */
 void input_clear(GtkWidget *gw, GPtrArray *input)
 { 
     int i;
@@ -222,7 +227,8 @@ GtkWidget* tab2()
     //GtkTreeStore *store;
     GPtrArray *input;
     int i, j;
-
+    
+    //Названия столбцов в таблице
     const gchar *labelCoumn[17] = {
         "Модель",
         "Производительность\n ядра MIPS (оп/с)",                  //1
@@ -318,6 +324,7 @@ GtkWidget* tab2()
     gtk_table_set_col_spacings(GTK_TABLE(tableBox), 5);
     //g_print("TABLEBOX: Created\n");
 
+    //Задаем количество стобцов и их тип для таблицы
     store = gtk_tree_store_new( 17,
             G_TYPE_STRING,  //0
             G_TYPE_STRING,  //1
@@ -353,6 +360,7 @@ GtkWidget* tab2()
         //g_print("BUTTON: Created\n");
     }
     
+    //Заполняем виджетами таблицу расположения.
     for (i=0; i<3; i++) {
         if (i==1)   {
             gtk_table_attach_defaults(GTK_TABLE(tableBox), GTK_WIDGET(createFrame(input, "АЦП", namesACP, namesFromBaseACP, 3)), 1, 2, 0, 3 );
@@ -388,7 +396,7 @@ GtkWidget* tab2()
             G_CALLBACK(input_clear), (gpointer) input);
 
     g_signal_connect(G_OBJECT(button[0]), "clicked", 
-            G_CALLBACK(entry_print2), (gpointer)input);
+            G_CALLBACK(form_sql_request_callback), (gpointer)input);
     
    gtk_container_set_border_width(GTK_CONTAINER(tableBox), 5);
 
