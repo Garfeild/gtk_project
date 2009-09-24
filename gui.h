@@ -53,4 +53,10 @@ GtkWidget* createComboBox(GPtrArray *comboboxes, const gchar *name, const gchar 
  * функция возвращает указатель на фрейм, содержащий size виджетов ввода    */
 GtkWidget* createFrame(GPtrArray *entries, const gchar name[], const gchar *names[], const gchar *wnames[], const int size);
 
+void show_dialog_info();
+
+void clearTable(const int size, GtkTreeStore *store, void (*set_info)(GtkTreeStore*, GPtrArray*));
+
+void entry_enter(GtkWidget *gw, GtkWidget *button);
+
 #endif   

@@ -7,5 +7,6 @@
 void set_table_info(GPtrArray *results);
 GtkWidget* tab2();
 
+void clear_table_mine(const int size, GtkTreeStore *store);
 #endif   
 

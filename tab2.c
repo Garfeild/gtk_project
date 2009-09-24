@@ -44,22 +44,25 @@
     
 sqlite3 *db;
 GtkTreeStore *store;
+gboolean callbackFlag = FALSE;
 
 /* Callbacks */
 /* sql_callback */
 /* функция-callback для обработки SQL запроса */
 static int sql_callback(void *NotUsed, int argc, char **argv, char **azColName)
 {
+    callbackFlag = TRUE;
     int i;
     NotUsed=0;
     GPtrArray *results;
     results = g_ptr_array_new();
-    //g_print("Callback\n");
+    g_print("Callback\n");
     for(i=0; i<argc; i++){
         //printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
         g_ptr_array_add(results, argv[i]);
      }
     //printf("\n");
+
     set_table_info(results);
     //g_free(results);
 
@@ -74,6 +77,9 @@ void form_sql_request_callback(GtkWidget *gw, GPtrArray *array)
     int i;
     gboolean flag = TRUE;
     gchar *str2, *str3;
+    
+    callbackFlag = FALSE;
+
     //Подстроки запроса
     gchar *subStr[3] =  {
         "=\"", 
@@ -132,7 +138,12 @@ void form_sql_request_callback(GtkWidget *gw, GPtrArray *array)
     {
         g_fprintf(stderr,"SQL error: %s\n", zErrMsg);
     }
-    
+    if (callbackFlag == FALSE)
+    {
+        g_print("after sqlite3_exec\n");
+        clear_table_mine(17, store);
+        show_dialog_info();
+    }
     //g_free(str);
     g_free(str2);
     g_free(str3);
@@ -150,11 +161,7 @@ void input_clear(GtkWidget *gw, GPtrArray *input)
         else if (i>=10 && i<input->len)
             gtk_combo_box_set_active(GTK_COMBO_BOX(g_ptr_array_index(input, i)), -1);
     }
-}
-
-void entry_enter(GtkWidget *gw, GtkWidget *button)
-{
-    g_signal_emit_by_name(G_OBJECT(button), "clicked");
+    clear_table_mine(17, store);
 }
 
 /* table */
@@ -179,7 +186,9 @@ void set_column(GtkWidget *tree, const char *labelColumn[])
 void set_table_info(GPtrArray *results)
 {
     GtkTreeIter iter;
- 
+    gtk_tree_store_append (store, &iter, NULL); /* Acquire an iterator */
+    gtk_tree_store_set (store, &iter, MP_NAME, "", -1);
+
     gtk_tree_store_append (store, &iter, NULL); /* Acquire an iterator */
     gtk_tree_store_set (store, &iter,
             MP_NAME, g_ptr_array_index(results, MP_NAME),
@@ -215,6 +224,24 @@ GtkWidget* setup_table(GtkTreeStore *store, const char *labelColumn[])
   //g_print("setup\n");
   return tree;
  
+}
+
+void clear_table_mine(const int size, GtkTreeStore *store)
+{
+    GPtrArray *empty = g_ptr_array_new();
+    int k;
+    
+    gtk_tree_store_clear(store);
+    
+    for (k=0; k < size; k++)
+    {
+        g_ptr_array_add(empty, "");
+    }
+
+    for (k=0; k < 3; k++) 
+        set_table_info(empty);
+
+    g_ptr_array_free (empty, FALSE);
 }
 
 GtkWidget* tab2()
@@ -345,6 +372,14 @@ GtkWidget* tab2()
             G_TYPE_STRING   //6
             );
     tableOut = setup_table(store, labelCoumn);
+
+    /*
+    void (*ptrFunc)(GtkTreeStore*, GPtrArray*);
+    ptrFunc = set_table_info;
+    clearTable(17, store,  ptrFunc);
+    */
+    
+    clear_table_mine(17, store);
 
     scrWindow = gtk_scrolled_window_new (NULL, NULL);
     

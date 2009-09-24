@@ -10,6 +10,7 @@
  * произвести действие                                                  */
 void toggle_action(GtkWidget *checkButton, GtkWidget *widget)
 {
+    //g_print("toggle\n");
     // Переменная для хранения состояния виджета
     gboolean val;
  
@@ -26,6 +27,11 @@ void toggle_action(GtkWidget *checkButton, GtkWidget *widget)
         // Обратное действие
         gtk_widget_set_sensitive(GTK_WIDGET(widget), FALSE);
     }
+}
+
+void entry_enter(GtkWidget *gw, GtkWidget *button)
+{
+    g_signal_emit_by_name(G_OBJECT(button), "clicked");
 }
 
 /* createEntry */
@@ -59,7 +65,7 @@ GtkWidget* createEntry(GPtrArray *entries, const gchar *name, const gchar *wname
     // Создаем GtkCheckButton с меткой name 
     _checkButtonWLabel = gtk_check_button_new_with_label(name);
     // Устанавливаем GtkCheckButton в активное состояние
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(_checkButtonWLabel), TRUE);
+    //gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(_checkButtonWLabel), TRUE);
     
     // Определяем форматирование по левому краю
     _leftAlign = gtk_alignment_new(0, 0.5, 0.1, 0);
@@ -77,6 +83,8 @@ GtkWidget* createEntry(GPtrArray *entries, const gchar *name, const gchar *wname
     // Соединяем сигнал снятия галочки для GtkCheckButton с виджетом ввода.
     g_signal_connect(G_OBJECT(_checkButtonWLabel), "toggled",
             G_CALLBACK(toggle_action), (gpointer) _entry);
+    
+    g_signal_emit_by_name(_checkButtonWLabel, "toggled", (gpointer)_entry);
     
     return _vbox;
 }
@@ -170,7 +178,7 @@ GtkWidget* createFrame(GPtrArray *entries, const gchar *frameName, const gchar *
     // Создаем GtkCheckButton с меткой frameName
     _checkButtonWLabel = gtk_check_button_new_with_label(frameName);
     // Устанавливаем GtkCheckButton в активное состояние
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(_checkButtonWLabel), TRUE);
+    //gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(_checkButtonWLabel), TRUE);
     // Устанавливаем GtkCheckButton в качестве метки фрейма
     gtk_frame_set_label_widget(GTK_FRAME(_frame), GTK_WIDGET(_checkButtonWLabel));
     // Заполняем фрейм полями ввода 
@@ -190,6 +198,38 @@ GtkWidget* createFrame(GPtrArray *entries, const gchar *frameName, const gchar *
     // Вообще _vbox заведен для того, чтобы не блокировался сам фрейм и _checkButtonWLabel
     g_signal_connect(G_OBJECT(_checkButtonWLabel), "toggled",
             G_CALLBACK(toggle_action), (gpointer) _vbox);
+    
+    g_signal_emit_by_name(_checkButtonWLabel, "toggled", (gpointer)_vbox);
    
     return _frame;
 }
+
+void show_dialog_info()
+{
+    GtkWidget *dialog; 
+    dialog = gtk_message_dialog_new (NULL,
+            GTK_DIALOG_DESTROY_WITH_PARENT,
+            GTK_MESSAGE_INFO,
+            GTK_BUTTONS_OK,
+            "Ничего не найдено");
+    gtk_window_set_title (GTK_WINDOW(dialog), "Уведомление");
+    gtk_dialog_run(GTK_DIALOG(dialog));
+    gtk_widget_destroy(dialog);
+}
+
+/*
+void clearTable(const int size, GtkTreeStore *store, void (*set_info)(GtkTreeStore*, GPtrArray*))
+{
+    GPtrArray *empty = g_ptr_array_new();
+    int k;
+    for (k=0; k < size; k++)
+    {
+        g_ptr_array_add(empty, "");
+    }
+
+    for (k=0; k < 3; k++) {
+        set_table_info_xu (store, empty);
+    }
+    g_ptr_array_free (empty, FALSE);
+}
+*/
